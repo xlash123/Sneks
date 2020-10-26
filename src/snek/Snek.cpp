@@ -120,7 +120,7 @@ void Snek::draw(SnekState *snek, int scale) {
     // Draw body pieces of the snek
     for (size_t i = 0; i < snek->length; i++) {
         Position pos = snek->body[i];
-        SDL_Rect body = { pos.x * scale, pos.y * scale, 1 * scale, 1 * scale };
+        SDL_Rect body = { pos.x * scale, pos.y * scale, scale, scale };
         SDL_RenderDrawRect(global::renderer, &body);
     }
 }

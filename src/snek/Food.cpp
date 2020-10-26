@@ -1,9 +1,6 @@
 #include "Food.h"
 
-void Food::draw(FoodState *food) {
-    SDL_Color color = FOOD_COLOR;
-    SDL_SetRenderDrawColor(global::renderer, color.r, color.g, color.b, color.a);
-
-    SDL_Rect rect = { food->pos.x, food->pos.y, 1, 1 };
+void Food::draw(FoodState *food, int scale) {
+    SDL_Rect rect = { food->pos.x * scale, food->pos.y * scale, scale, scale };
     SDL_RenderFillRect(global::renderer, &rect);
 }

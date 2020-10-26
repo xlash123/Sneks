@@ -9,6 +9,8 @@
 #define WORLD_WIDTH 60
 #define WORLD_HEIGHT 60
 
+#include <stdlib.h>
+
 #include "../globals.h"
 #include "../snek/Snek.h"
 #include "../snek/Food.h"
@@ -23,8 +25,6 @@ typedef struct {
     size_t maxFood;
     // Current number of elements in sneks array
     size_t numSneks;
-    // Current number of elements in food array
-    size_t numFood;
 } WorldState;
 
 namespace World {
@@ -35,6 +35,8 @@ namespace World {
 
     // Reset the world and everything in it to a starting state
     void reset(WorldState *world);
+    // Reset a food's position to a non-snek location
+    void resetFood(WorldState *world, int foodIdx);
     // Update the world and everything in it
     void update(WorldState *world);
     // Draw the world and everything in it
