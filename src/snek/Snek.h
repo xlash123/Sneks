@@ -32,7 +32,7 @@ typedef struct {
     // The number of this player
     size_t playerNum;
     // The controller of this player
-    ControllerState *controller;
+    ControllerState controller;
     // The direction the snek is facing
     Direction direction;
     // The last game tick when this snek was polled. Used for netcode
@@ -56,7 +56,7 @@ namespace Snek {
      * @param snek - the state of the snek to draw
      * @param sideLength - the length of the side of one body piece
      */
-    void draw(SnekState *snek);
+    void draw(SnekState *snek, int scale);
     // Deallocate the snek
     void free(SnekState *snek);
 };

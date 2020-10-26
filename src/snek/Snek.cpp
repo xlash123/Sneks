@@ -12,14 +12,13 @@ const SDL_Color PLAYER_COLORS[MAX_SNEKS] = {
 };
 
 void Snek::init(SnekState *snek, int playerNumber) {
-    // Double-check that the body doesn't exist
+    Controller::init(&snek->controller);
+
+    // Allocate snek body
+    snek->body = (Position *) malloc(SNEK_ALLOC_SIZE * sizeof(Position));
     if (snek->body == NULL) {
-        // Allocate body
-        snek->body = (Position *) malloc(SNEK_ALLOC_SIZE * sizeof(Position));
-        if (snek->body == NULL) {
-            printf("Out of heap memory! Cannot create new Snek.\n");
-            exit(2);
-        }
+        printf("Out of heap memory! Cannot create new Snek.\n");
+        exit(2);
     }
 
     // Some placeholder values for the body
@@ -34,7 +33,7 @@ void Snek::init(SnekState *snek, int playerNumber) {
 
 void Snek::update(SnekState *snek) {
     // Get the players actions for this frame
-    Actions actions = snek->controller->actions;
+    Actions actions = snek->controller.actions;
 
     // Update direction based on input
     // TODO: This is kinda unoptimized. Might be a better way to do this
@@ -49,8 +48,8 @@ void Snek::update(SnekState *snek) {
     }
 
     // Move each tail piece up
-    for (int i = snek->length - 1; i > 0; i++) {
-        snek->body[i] = snek->body[i + 1];
+    for (int i = snek->length - 1; i > 0; i--) {
+        snek->body[i] = snek->body[i - 1];
     }
 
     // Move the head based on current direction
@@ -92,14 +91,15 @@ void Snek::grow(SnekState *snek) {
     snek->length++;
 }
 
-void Snek::draw(SnekState *snek) {
+void Snek::draw(SnekState *snek, int scale) {
     // Set render color for this snek
     SDL_Color color = PLAYER_COLORS[snek->playerNum];
     SDL_SetRenderDrawColor(global::renderer, color.r, color.g, color.b, color.a);
+
     // Draw body pieces of the snek
     for (size_t i = 0; i < snek->length; i++) {
         Position pos = snek->body[i];
-        SDL_Rect body = { pos.x, pos.y, 1, 1 };
+        SDL_Rect body = { pos.x * scale, pos.y * scale, 1 * scale, 1 * scale };
         SDL_RenderDrawRect(global::renderer, &body);
     }
 }

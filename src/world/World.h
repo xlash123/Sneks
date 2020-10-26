@@ -28,7 +28,7 @@ typedef struct {
 } WorldState;
 
 namespace World {
-    extern WorldState state;
+    void init(WorldState *world);
 
     // Add a snek to the world. Return false if full
     bool addSnek(WorldState *world, SnekState snek);
@@ -36,7 +36,7 @@ namespace World {
     // Update the world and everything in it
     void update(WorldState *world);
     // Draw the world and everything in it
-    void draw(WorldState *world);
+    void draw(WorldState *world, float scale);
 };
 
 #endif

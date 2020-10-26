@@ -5,7 +5,7 @@
 
 // The type of controller to get inputs from
 typedef enum {
-	KEYBOARD, GAMEPAD, REMOTE
+	NONE, KEYBOARD, GAMEPAD, REMOTE
 } ControllerType;
 
 // The index and value of a hat input
@@ -58,6 +58,7 @@ typedef struct {
 } ControllerState;
 
 namespace Controller {
+	void init(ControllerState *controller);
 	// Set an SDL gamepad to a controller
 	void setGamepad(ControllerState *controller, SDL_GameController *gamepad);
 	// Set the actions of the controller to the default

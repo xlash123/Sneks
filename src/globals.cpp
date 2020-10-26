@@ -4,7 +4,7 @@
 int global::screenWidth = 640;
 int global::screenHeight = 480;
 const bool global::canScreenSizeChange = true;
-const size_t global::FPS = 60;
+const size_t global::FPS = 12;
 
 const uint32_t global::TARGET_FRAME_TIME = (uint32_t) (1000 / global::FPS);
 

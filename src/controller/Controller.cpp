@@ -1,5 +1,11 @@
 #include "Controller.h"
 
+void Controller::init(ControllerState *controller) {
+	Controller::setDefaultActions(controller);
+	controller->gamepad = NULL;
+	controller->type = NONE;
+}
+
 void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 	switch (controller->type) {
 		case KEYBOARD: {
@@ -34,6 +40,8 @@ void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 			
 			break;
 		}
+		default:
+			;
 	}
 }
 
