@@ -8,11 +8,21 @@ void World::init(WorldState *world) {
 
 bool World::addSnek(WorldState *world, SnekState snek) {
 	if (world->numSneks < MAX_SNEKS) {
+		snek.playerNum = world->numSneks;
 		world->sneks[world->numSneks++] = snek;
 		return true;
 	}
 
 	return false;
+}
+
+void World::reset(WorldState *world) {
+	// The starting y position of player 1
+	int startY = WORLD_HEIGHT / 2 - (((world->numSneks - 1) / 2) * SNEK_START_SPACING) / 2;
+	// Initialize snek locations
+	for (size_t i = 0; i < world->numSneks; i++) {
+		Snek::reset(&world->sneks[i], startY + ((i / 2) * SNEK_START_SPACING), i % 2 == 0);
+	}
 }
 
 void World::update(WorldState *world) {

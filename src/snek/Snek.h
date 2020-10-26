@@ -31,6 +31,8 @@ typedef struct {
     size_t length;
     // The number of this player
     size_t playerNum;
+    // If the snek is alive
+    bool alive;
     // The controller of this player
     ControllerState controller;
     // The direction the snek is facing
@@ -46,7 +48,10 @@ extern const SDL_Color PLAYER_COLORS[MAX_SNEKS];
 
 namespace Snek {
     // Initialize snek
-    void init(SnekState *snek, int playerNumber);
+    void init(SnekState *snek);
+    // Resets the snek to a given head y position and facing left or right
+    void reset(SnekState *snek, int y, bool isRight);
+
     // Update the snek
     void update(SnekState *snek);
     // Grow the snek when it eats food

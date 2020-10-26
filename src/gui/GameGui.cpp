@@ -3,11 +3,16 @@
 GameGui::GameGui() : Gui() {
 	World::init(&world);
 
-    SnekState snek;
-	Snek::init(&snek, 0);
-	snek.controller.type = KEYBOARD;
+	const int testNum = 8;
+	SnekState sneks[testNum];
 
-	World::addSnek(&world, snek);
+	for (int i = 0; i < testNum; i++) {
+		Snek::init(&sneks[i]);
+		sneks[i].controller.type = KEYBOARD;
+		World::addSnek(&world, sneks[i]);
+	}
+
+	World::reset(&world);
 }
 
 GameGui::~GameGui() {

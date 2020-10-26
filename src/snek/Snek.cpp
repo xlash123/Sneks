@@ -11,10 +11,11 @@ const SDL_Color PLAYER_COLORS[MAX_SNEKS] = {
     { 0xFF, 0xFF, 0xFF, 0xFF }, // Player 8 - White
 };
 
-void Snek::init(SnekState *snek, int playerNumber) {
+void Snek::init(SnekState *snek) {
     Controller::init(&snek->controller);
 
     // Allocate snek body
+    snek->body = NULL;
     snek->body = (Position *) malloc(SNEK_ALLOC_SIZE * sizeof(Position));
     if (snek->body == NULL) {
         printf("Out of heap memory! Cannot create new Snek.\n");
@@ -25,10 +26,30 @@ void Snek::init(SnekState *snek, int playerNumber) {
     for (int i = 0; i < SNEK_STARTING_LENGTH; i++) {
         snek->body[i] = { SNEK_STARTING_LENGTH - i, 0 };
     }
+    snek->alive = true;
     snek->direction = RIGHT;
-    snek->playerNum = playerNumber;
     snek->lastPolled = 0;
     snek->length = SNEK_STARTING_LENGTH;
+}
+
+void Snek::reset(SnekState *snek, int y, bool isRight) {
+    // Reinitialize body
+    Snek::free(snek);
+    snek->body = (Position *) malloc(SNEK_ALLOC_SIZE * sizeof(Position));
+    if (snek->body == NULL) {
+        printf("Out of heap memory! Cannot create new Snek.\n");
+        exit(2);
+    }
+    snek->length = SNEK_STARTING_LENGTH;
+
+    // Initialize body positioning
+    int startX = isRight ? SNEK_STARTING_LENGTH + 2 : WORLD_WIDTH - SNEK_STARTING_LENGTH - 2;
+    int dx = isRight ? -1 : 1;
+    snek->direction = isRight ? RIGHT : LEFT;
+    snek->body[0] = { startX, y };
+    for (size_t i = 1; i < SNEK_STARTING_LENGTH; i++) {
+        snek->body[i] = { snek->body[i - 1].x + dx, snek->body[i - 1].y };
+    }
 }
 
 void Snek::update(SnekState *snek) {

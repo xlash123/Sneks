@@ -33,6 +33,8 @@ namespace World {
     // Add a snek to the world. Return false if full
     bool addSnek(WorldState *world, SnekState snek);
 
+    // Reset the world and everything in it to a starting state
+    void reset(WorldState *world);
     // Update the world and everything in it
     void update(WorldState *world);
     // Draw the world and everything in it
