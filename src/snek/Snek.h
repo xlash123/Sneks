@@ -2,13 +2,21 @@
 
 #define _SNEK_H
 
+// The starting length of a snek when the game starts
+#define SNEK_STARTING_LENGTH 3
+// The starting and repeating allocated size for the snek body
+#define SNEK_ALLOC_SIZE 100
+// Amount of vertical between sneks at the start of the round
+#define SNEK_START_SPACING 10
+// Displacement from the side at the start of the round
+#define SNEK_START_X_DIST (SNEK_STARTING_LENGTH + 2)
+
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 
 #include "../globals.h"
-
-// The starting length of a snek when the game starts
-#define SNEK_STARTING_LENGTH 3
+#include "Position.h"
+#include "../controller/Controller.h"
 
 // Enum for the snek direction
 typedef enum {
@@ -24,21 +32,21 @@ typedef struct {
     // The number of this player
     size_t playerNum;
     // The controller of this player
-    Controller *controller;
+    ControllerState *controller;
     // The direction the snek is facing
     Direction direction;
     // The last game tick when this snek was polled. Used for netcode
     uint lastPolled;
 } SnekState;
 
-#include "../controller/Controller.h"
 #include "../world/World.h"
-#include "Position.h"
 
 // Possible colors of players
-const SDL_Color PLAYER_COLORS[MAX_SNEKS];
+extern const SDL_Color PLAYER_COLORS[MAX_SNEKS];
 
 namespace Snek {
+    // Initialize snek
+    void init(SnekState *snek, int playerNumber);
     // Update the snek
     void update(SnekState *snek);
     // Grow the snek when it eats food
@@ -49,6 +57,8 @@ namespace Snek {
      * @param sideLength - the length of the side of one body piece
      */
     void draw(SnekState *snek);
+    // Deallocate the snek
+    void free(SnekState *snek);
 };
 
 #endif

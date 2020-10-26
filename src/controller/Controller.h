@@ -1,5 +1,4 @@
 #ifndef _CONTROLLER_H
-
 #define _CONTROLLER_H
 
 #include <SDL2/SDL.h>
@@ -39,7 +38,7 @@ typedef struct {
 	bool moveUp, moveDown, moveLeft, moveRight;
 	// Minor speed boosts
 	bool speedUp, speedDown;
-} PlayerActions;
+} Actions;
 
 // A collection of action bindings for every snek action for configuration
 typedef struct {
@@ -49,33 +48,22 @@ typedef struct {
 	ActionBinding speedUp, speedDown;
 } ActionBindings;
 
-// Interface by which a Snek can be controlled. This can represent the player, a server, or a computer
-class Controller {
-private:
-	// The actions that the snek will make in the next frame
-	PlayerActions actions;
-
-	// The type of controller the player is using
+typedef struct {
+	// The actions of the player made by this controller
+	Actions actions;
+	// The type of controller
 	ControllerType type;
-
 	// Reference to the underlying SDL Controller (used only for type = GAMEPAD)
 	SDL_GameController *gamepad;
-public:
-	// Create new keyboard-based controller
-	Controller();
-	// Create a new controller for a given gamepad
-	Controller(SDL_GameController *gamepad);
-	// Create a new controller for a remove player. TODO: Replace connectionId with a real identifier
-	Controller(int connectionId);
+} ControllerState;
 
-	// Returns the actions the player makes in the current frame
-	PlayerActions getPlayerActions();
-
-	// Polls for the input of the user
-	void updatePlayerActions(SDL_Event *event);
-
-	// Reset the player actions to nothing pressed
-	void resetPlayerActions();
+namespace Controller {
+	// Set an SDL gamepad to a controller
+	void setGamepad(ControllerState *controller, SDL_GameController *gamepad);
+	// Set the actions of the controller to the default
+	void setDefaultActions(ControllerState *controller);
+	// Update that controller based on SDL events
+	void updateActions(ControllerState *controller, SDL_Event *event);
 };
 
 #endif

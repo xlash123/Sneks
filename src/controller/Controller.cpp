@@ -1,22 +1,7 @@
 #include "Controller.h"
 
-Controller::Controller() {
-	type = KEYBOARD;
-}
-
-Controller::Controller(SDL_GameController *gamepad) {
-	type = GAMEPAD;
-	this->gamepad = gamepad;
-}
-
-Controller::Controller(int connectionId) {}
-
-PlayerActions Controller::getPlayerActions() {
-	return actions;
-}
-
-void Controller::updatePlayerActions(SDL_Event *event) {
-	switch (type) {
+void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
+	switch (controller->type) {
 		case KEYBOARD: {
 			// Check that the event type is for keyboard events
 			if (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP) {
@@ -24,18 +9,19 @@ void Controller::updatePlayerActions(SDL_Event *event) {
 				bool isDown = event->type == SDL_KEYDOWN;
 				switch (event->key.keysym.scancode) {
 					case SDL_SCANCODE_W:
-						actions.moveUp = isDown;
+						controller->actions.moveUp = isDown;
 						break;
 					case SDL_SCANCODE_A:
-						actions.moveLeft = isDown;
+						controller->actions.moveLeft = isDown;
 						break;
 					case SDL_SCANCODE_S:
-						actions.moveDown = isDown;
+						controller->actions.moveDown = isDown;
 						break;
 					case SDL_SCANCODE_D:
-						actions.moveRight = isDown;
+						controller->actions.moveRight = isDown;
 						break;
 					default:
+						;
 				}
 			}
 			break;
@@ -51,6 +37,6 @@ void Controller::updatePlayerActions(SDL_Event *event) {
 	}
 }
 
-void Controller::resetPlayerActions() {
-	actions = { false, false, false, false, false, false };
+void Controller::setDefaultActions(ControllerState *controller) {
+	controller->actions = { false, false, false, false, false, false };
 }

@@ -4,9 +4,9 @@
 int global::screenWidth = 640;
 int global::screenHeight = 480;
 const bool global::canScreenSizeChange = true;
-const int global::FPS = 60;
+const size_t global::FPS = 60;
 
-const int global::TARGET_FRAME_TIME = 1000 / global::FPS;
+const uint32_t global::TARGET_FRAME_TIME = (uint32_t) (1000 / global::FPS);
 
 // SDL references
 SDL_Window *global::window = NULL;

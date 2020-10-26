@@ -17,9 +17,9 @@ namespace global {
 	extern const bool canScreenSizeChange;
 
 	// The target framerate
-	extern const int FPS;
+	extern const size_t FPS;
 	// The target time between frames
-	extern const int TARGET_FRAME_TIME;
+	extern const uint32_t TARGET_FRAME_TIME;
 
 	// SDL references
 

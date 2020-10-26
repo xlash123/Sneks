@@ -11,9 +11,30 @@ const SDL_Color PLAYER_COLORS[MAX_SNEKS] = {
     { 0xFF, 0xFF, 0xFF, 0xFF }, // Player 8 - White
 };
 
+void Snek::init(SnekState *snek, int playerNumber) {
+    // Double-check that the body doesn't exist
+    if (snek->body == NULL) {
+        // Allocate body
+        snek->body = (Position *) malloc(SNEK_ALLOC_SIZE * sizeof(Position));
+        if (snek->body == NULL) {
+            printf("Out of heap memory! Cannot create new Snek.\n");
+            exit(2);
+        }
+    }
+
+    // Some placeholder values for the body
+    for (int i = 0; i < SNEK_STARTING_LENGTH; i++) {
+        snek->body[i] = { SNEK_STARTING_LENGTH - i, 0 };
+    }
+    snek->direction = RIGHT;
+    snek->playerNum = playerNumber;
+    snek->lastPolled = 0;
+    snek->length = SNEK_STARTING_LENGTH;
+}
+
 void Snek::update(SnekState *snek) {
     // Get the players actions for this frame
-    PlayerActions actions = snek->controller->getPlayerActions();
+    Actions actions = snek->controller->actions;
 
     // Update direction based on input
     // TODO: This is kinda unoptimized. Might be a better way to do this
@@ -56,8 +77,8 @@ void Snek::update(SnekState *snek) {
 
 void Snek::grow(SnekState *snek) {
     // Check if we need to reallocate
-    if (snek->length % 100 == 0) {
-        snek->body = (Position *)realloc(snek->body, (snek->length + 100) * sizeof(Position));
+    if (snek->length % SNEK_ALLOC_SIZE == 0) {
+        snek->body = (Position *)realloc(snek->body, (snek->length + SNEK_ALLOC_SIZE) * sizeof(Position));
         if (snek->body == NULL) {
             fprintf(stderr, "Critical error: Could not allocate memory to grow snek.");
             exit(1);
@@ -81,4 +102,11 @@ void Snek::draw(SnekState *snek) {
         SDL_Rect body = { pos.x, pos.y, 1, 1 };
         SDL_RenderDrawRect(global::renderer, &body);
     }
+}
+
+void Snek::free(SnekState *snek) {
+    // Free the snake body
+    free(snek->body);
+    // Null the body pointer to prevent reuse
+    snek->body = NULL;
 }

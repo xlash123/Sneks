@@ -6,7 +6,7 @@ BUILD_PATH = build
 BIN_PATH = ./
 
 # executable # 
-BIN_NAME = runner
+BIN_NAME = sneks
 
 # extensions #
 SRC_EXT = cpp
