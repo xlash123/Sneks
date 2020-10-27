@@ -39,7 +39,7 @@ void World::resetFood(WorldState *world, int foodIdx) {
 		// Check that this position doesn't overlap a snek
 		flag = false;
 		for (size_t j = 0; j < world->numSneks; j++) {
-			if (world->sneks[j].body[0].x == pos.x && world->sneks[j].body[0].y == pos.y) {
+			if (world->sneks[j].alive && world->sneks[j].body[0].x == pos.x && world->sneks[j].body[0].y == pos.y) {
 				flag = true;
 				break;
 			}
@@ -51,7 +51,7 @@ void World::resetFood(WorldState *world, int foodIdx) {
 void World::update(WorldState *world) {
 	// Update all sneks in the world
 	for (size_t i = 0; i < world->numSneks; i++) {
-		if (&world->sneks[i].alive) {
+		if (world->sneks[i].alive) {
 			Snek::update(&world->sneks[i]);
 		}
 	}

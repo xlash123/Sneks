@@ -25,6 +25,8 @@ typedef struct {
     size_t maxFood;
     // Current number of elements in sneks array
     size_t numSneks;
+    // The state of the rng
+    unsigned int rng;
 } WorldState;
 
 namespace World {
