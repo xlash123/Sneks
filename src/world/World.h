@@ -30,12 +30,13 @@ typedef struct {
 } WorldState;
 
 namespace World {
+    // Initialize world state to default. Do not use to restart a game!
     void init(WorldState *world);
 
     // Add a snek to the world. Return false if full
     bool addSnek(WorldState *world, SnekState snek);
 
-    // Reset the world and everything in it to a starting state
+    // Reset the world and everything in it to a starting state, essentially restarting a game
     void reset(WorldState *world);
     // Reset a food's position to a non-snek location
     void resetFood(WorldState *world, int foodIdx);

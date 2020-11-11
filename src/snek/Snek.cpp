@@ -50,6 +50,7 @@ void Snek::reset(SnekState *snek, int y, bool isRight) {
     for (size_t i = 1; i < SNEK_STARTING_LENGTH; i++) {
         snek->body[i] = { snek->body[i - 1].x + dx, snek->body[i - 1].y };
     }
+    snek->alive = true;
 }
 
 void Snek::update(SnekState *snek) {

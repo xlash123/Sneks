@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 
+#define CONTROLLER_DEADZONE ((int) (0.5 * 32767))
+
 // The type of controller to get inputs from
 typedef enum {
 	NONE, KEYBOARD, GAMEPAD, REMOTE
@@ -55,6 +57,7 @@ typedef struct {
 	ControllerType type;
 	// Reference to the underlying SDL Controller (used only for type = GAMEPAD)
 	SDL_GameController *gamepad;
+	Sint16 gamepadId;
 } ControllerState;
 
 namespace Controller {

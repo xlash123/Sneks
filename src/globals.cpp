@@ -15,3 +15,6 @@ SDL_Window *global::window = NULL;
 SDL_Renderer *global::renderer = NULL;
 
 TTF_Font *global::font = NULL;
+
+ControllerState *global::controllers[MAX_CONTROLLERS] = { 0 };
+int global::numControllers = 0;

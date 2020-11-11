@@ -2,11 +2,15 @@
 
 #define _SNEK_GLOBALS_H
 
+#define MAX_CONTROLLERS 8
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <string.h>
 #include <stdio.h>
 #include <sstream>
+
+#include "controller/Controller.h"
 
 namespace global {
 	// Current width of the screen
@@ -29,6 +33,9 @@ namespace global {
 	extern SDL_Renderer *renderer;
 	// The SDL font
 	extern TTF_Font *font;
+	// List of connected controllers (0 is always keyboard)
+	extern ControllerState *controllers[MAX_CONTROLLERS];
+	extern int numControllers;
 }
 
 #endif

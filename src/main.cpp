@@ -10,6 +10,9 @@
 // Initialze SDL components and game state
 bool init();
 
+// Acknoledge new controllers
+void handleControllers(Sint32 id, bool isNew);
+
 // The main game loop
 void gameLoop();
 
@@ -27,7 +30,7 @@ int main()
 }
 
 bool init() {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
         printf("SDL could not initialize: %s\n", SDL_GetError());
         return false;
     }
@@ -47,7 +50,28 @@ bool init() {
         return false;
     }
 
+    // Set up main menu
     gui_stack.clear();
+    // TODO: Put main menu gui here
+
+    // Keyboard controller
+    global::controllers[0] = (ControllerState *) malloc(sizeof(ControllerState));
+    Controller::init(global::controllers[0]);
+    global::controllers[0]->type = KEYBOARD;
+    global::numControllers++;
+
+    int numJoystick = SDL_NumJoysticks();
+
+    // Other connected controllers
+    for (int i = 1; i < MAX_CONTROLLERS && (i - 1) < numJoystick; i++) {
+        global::controllers[i] = (ControllerState *) malloc(sizeof(ControllerState));
+        Controller::init(global::controllers[i]);
+        global::controllers[i]->type = GAMEPAD;
+        global::controllers[i]->gamepad = SDL_GameControllerOpen(i - 1);
+        global::numControllers++;
+    }
+
+    // Start game gui
     gui_stack.push_back(new GameGui());
 
     return true;
@@ -88,6 +112,13 @@ void gameLoop() {
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                         SDL_GetRendererOutputSize(global::renderer, &global::screenWidth, &global::screenHeight);
                     }
+                    break;
+                case SDL_CONTROLLERDEVICEADDED:
+                    handleControllers(event.cdevice.which, true);
+                    break;
+                case SDL_CONTROLLERDEVICEREMOVED:
+                    handleControllers(event.cdevice.which, false);
+                    break;
                 default:
                     ;
             }
@@ -129,6 +160,35 @@ void gameLoop() {
         // Limit framerate
         if (totalTime < global::TARGET_FRAME_TIME) {
             SDL_Delay(global::TARGET_FRAME_TIME - totalTime);
+        }
+    }
+}
+
+void handleControllers(SDL_JoystickID id, bool isNew) {
+    if (isNew) {
+        // Add controller
+        for (int i = 1; i < MAX_CONTROLLERS; i++) {
+            if (global::controllers[i] == NULL) {
+                global::controllers[i] = (ControllerState *) malloc(sizeof(ControllerState));
+                Controller::init(global::controllers[i]);
+                global::controllers[i]->type = GAMEPAD;
+                global::controllers[i]->gamepad = SDL_GameControllerFromInstanceID(id);
+                global::numControllers++;
+                break;
+            }
+        }
+    } else {
+        SDL_GameController *toRemove = SDL_GameControllerFromInstanceID(id);
+        // Remove controller
+        for (int i = 1; i < MAX_CONTROLLERS; i++) {
+            if (global::controllers[i] != NULL && global::controllers[i]->gamepad != toRemove) {
+                SDL_GameControllerClose(global::controllers[i]->gamepad);
+                global::controllers[i]->gamepad = NULL;
+                free(global::controllers[i]);
+                global::controllers[i] = NULL;
+                global::numControllers--;
+                break;
+            }
         }
     }
 }

@@ -6,9 +6,15 @@ GameGui::GameGui() : Gui() {
 	const int testNum = 8;
 	SnekState sneks[testNum];
 
-	for (int i = 0; i < testNum; i++) {
+	// TODO: Add sneks with local controllers
+	int i = 0;
+	Snek::init(&sneks[i]);
+	sneks[i].controller.type = KEYBOARD;
+	World::addSnek(&world, sneks[i]);
+
+	for (i = 1; i < global::numControllers; i++) {
 		Snek::init(&sneks[i]);
-		sneks[i].controller.type = KEYBOARD;
+		sneks[i].controller.type = GAMEPAD;
 		World::addSnek(&world, sneks[i]);
 	}
 
