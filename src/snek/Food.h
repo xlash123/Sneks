@@ -18,7 +18,7 @@ typedef struct {
 // Food-based functions
 namespace Food {
 	// Draw the food to the screen
-	void draw(FoodState *food, int scale);
+	void draw(FoodState *food, float scale);
 };
 
 #endif

@@ -1,6 +1,10 @@
 #ifndef _GAMEGUI_H
 #define _GAMEGUI_H
 
+#include <SDL2/SDL.h>
+
+#define GAME_BACKGROUND_COLOR ((SDL_Color) { 0x37, 0x37, 0x37, 0xFF })
+
 #include "../globals.h"
 #include "Gui.h"
 #include "../world/World.h"

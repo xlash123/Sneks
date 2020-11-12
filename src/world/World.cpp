@@ -119,13 +119,13 @@ void World::draw(WorldState *world, float scale) {
 	SDL_Color color = FOOD_COLOR;
     SDL_SetRenderDrawColor(global::renderer, color.r, color.g, color.b, color.a);
 	for (size_t i = 0; i < world->maxFood; i++) {
-		Food::draw(&world->food[i], (int) scale);
+		Food::draw(&world->food[i], scale);
 	}
 
 	// Draw all sneks
 	for (size_t i = 0; i < world->numSneks; i++) {
 		if (world->sneks[i].alive) {
-			Snek::draw(&world->sneks[i], (int) scale);
+			Snek::draw(&world->sneks[i], scale);
 		}
 	}
 }

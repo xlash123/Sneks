@@ -12,7 +12,7 @@ GameGui::GameGui() : Gui() {
 	sneks[i].controller.type = KEYBOARD;
 	World::addSnek(&world, sneks[i]);
 
-	for (i = 1; i < global::numControllers; i++) {
+	for (i = 1; i < /* global::numControllers */ testNum; i++) {
 		Snek::init(&sneks[i]);
 		sneks[i].controller.type = GAMEPAD;
 		World::addSnek(&world, sneks[i]);
@@ -36,6 +36,9 @@ void GameGui::onEvent(SDL_Event *event) {
 			Controller::updateActions(&world.sneks[i].controller, event);
 		}
 	}
+	if (event->type == SDL_KEYDOWN && event->key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+		World::reset(&world);
+	}
 }
 
 void GameGui::update() {
@@ -57,6 +60,14 @@ void GameGui::draw() {
 
 	// Set the viewport and the scaling for the world
 	SDL_RenderSetViewport(global::renderer, &worldViewport);
+
+	// Set game background color
+	{
+		SDL_Color c = GAME_BACKGROUND_COLOR;
+		SDL_SetRenderDrawColor(global::renderer, c.r, c.b, c.g, c.a);
+		// Draw background color
+		SDL_RenderFillRect(global::renderer, NULL);
+	}
 
     // Draw the world
     World::draw(&world, scale);

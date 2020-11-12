@@ -61,7 +61,7 @@ namespace Snek {
      * @param snek - the state of the snek to draw
      * @param sideLength - the length of the side of one body piece
      */
-    void draw(SnekState *snek, int scale);
+    void draw(SnekState *snek, float scale);
     // Deallocate the snek
     void free(SnekState *snek);
 };

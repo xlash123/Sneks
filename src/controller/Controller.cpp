@@ -26,8 +26,7 @@ void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 					case SDL_SCANCODE_D:
 						controller->actions.moveRight = isDown;
 						break;
-					default:
-						;
+					default:;
 				}
 			}
 			break;
@@ -95,8 +94,7 @@ void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 			
 			break;
 		}
-		default:
-			;
+		default:;
 	}
 }
 

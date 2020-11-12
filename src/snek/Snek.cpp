@@ -2,7 +2,7 @@
 
 const SDL_Color PLAYER_COLORS[MAX_SNEKS] = {
     { 0xFF, 0x00, 0x00, 0xFF }, // Player 1 - Red
-    { 0x00, 0x00, 0xFF, 0xFF }, // Player 2 - Blue
+    { 0x17, 0x17, 0xFF, 0xFF }, // Player 2 - Blue
     { 0xFF, 0xFF, 0x00, 0xFF }, // Player 3 - Yellow
     { 0x00, 0xFF, 0x00, 0xFF }, // Player 4 - Green
     { 0xFF, 0x70, 0x00, 0xFF }, // Player 5 - Orange
@@ -113,7 +113,7 @@ void Snek::grow(SnekState *snek) {
     snek->length++;
 }
 
-void Snek::draw(SnekState *snek, int scale) {
+void Snek::draw(SnekState *snek, float scale) {
     // Set render color for this snek
     SDL_Color color = PLAYER_COLORS[snek->playerNum];
     SDL_SetRenderDrawColor(global::renderer, color.r, color.g, color.b, color.a);
@@ -121,7 +121,11 @@ void Snek::draw(SnekState *snek, int scale) {
     // Draw body pieces of the snek
     for (size_t i = 0; i < snek->length; i++) {
         Position pos = snek->body[i];
-        SDL_Rect body = { pos.x * scale, pos.y * scale, scale, scale };
+        // Draw the body
+        SDL_Rect body = { (int) (pos.x * scale), (int) (pos.y * scale), (int) scale, (int) scale };
+        SDL_RenderDrawRect(global::renderer, &body);
+        // Draw a second layer of the body
+        body.x += 1; body.y += 1; body.w -= 2; body.h -= 2;
         SDL_RenderDrawRect(global::renderer, &body);
     }
 }

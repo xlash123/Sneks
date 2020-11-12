@@ -18,6 +18,9 @@ void gameLoop();
 
 int main()
 {
+    #if SNEKS_DEBUG
+        printf("Debug mode activated\n");
+    #endif
     srand(time(NULL));
     if (init()) {
         // Start game loop
@@ -35,20 +38,20 @@ bool init() {
         return false;
     }
 
-    global::window = SDL_CreateWindow("Sneks", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::screenWidth, global::screenHeight, SDL_WINDOW_SHOWN);
+    global::window = SDL_CreateWindow("Sneks", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::screenWidth, global::screenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (global::window == NULL) {
         printf("Window could not be created: %s\n", SDL_GetError());
         return false;
     }
-    SDL_SetWindowResizable(global::window, SDL_TRUE);
 
-    SDL_GetRendererOutputSize(global::renderer, &global::screenWidth, &global::screenHeight);
-
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     global::renderer = SDL_CreateRenderer(global::window, -1, SDL_RENDERER_ACCELERATED);
     if (global::renderer == NULL) {
         printf("Renderer could not be created: %s\n", SDL_GetError());
         return false;
     }
+
+    SDL_GetRendererOutputSize(global::renderer, &global::screenWidth, &global::screenHeight);
 
     // Set up main menu
     gui_stack.clear();
