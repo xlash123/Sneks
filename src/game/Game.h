@@ -1,5 +1,5 @@
-#ifndef _WORLD_H
-#define _WORLD_H
+#ifndef _GAME_H
+#define _GAME_H
 
 // The max number of sneks allowed in a world. Not configurable
 #define MAX_SNEKS 8
@@ -27,23 +27,26 @@ typedef struct {
     size_t numSneks;
     // The state of the rng
     unsigned int rng;
-} WorldState;
+} GameState;
 
-namespace World {
-    // Initialize world state to default. Do not use to restart a game!
-    void init(WorldState *world);
+namespace Game {
+    // Initialize game state to default. Do not use to restart a game!
+    void init(GameState *game);
 
-    // Add a snek to the world. Return false if full
-    bool addSnek(WorldState *world, SnekState snek);
+    // Add a snek to the game. Return false if full
+    bool addSnek(GameState *game, SnekState snek);
 
-    // Reset the world and everything in it to a starting state, essentially restarting a game
-    void reset(WorldState *world);
+    // Reset the game and everything in it to a starting state
+    void reset(GameState *game);
+
     // Reset a food's position to a non-snek location
-    void resetFood(WorldState *world, int foodIdx);
-    // Update the world and everything in it
-    void update(WorldState *world);
+    void resetFood(GameState *game, int foodIdx);
+
+    // Progress to the next game frame
+    void update(GameState *game);
+
     // Draw the world and everything in it
-    void draw(WorldState *world, float scale);
+    void draw(GameState *game, float scale);
 };
 
 #endif

@@ -7,22 +7,24 @@
 
 #include "../globals.h"
 #include "Gui.h"
-#include "../world/World.h"
+#include "../game/Game.h"
 
 // A gui that wraps around the game world
 class GameGui : public Gui {
 public:
-    // The game world
-    WorldState world;
+    // The current state of the game
+    GameState game;
 
     GameGui();
     ~GameGui();
 
     // Take events and apply them to the controlls
     void onEvent(SDL_Event *event);
-    // Update the world
+
+    // Update the game
     void update();
-    // Renders the world
+    
+    // Renders the game
     void draw();
 };
 

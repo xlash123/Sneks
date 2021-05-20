@@ -41,7 +41,7 @@ typedef struct {
     uint lastPolled;
 } SnekState;
 
-#include "../world/World.h"
+#include "../game/Game.h"
 
 // Possible colors of players
 extern const SDL_Color PLAYER_COLORS[MAX_SNEKS];

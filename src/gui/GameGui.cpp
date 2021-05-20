@@ -1,7 +1,7 @@
 #include "GameGui.h"
 
 GameGui::GameGui() : Gui() {
-	World::init(&world);
+	Game::init(&game);
 
 	const int testNum = 8;
 	SnekState sneks[testNum];
@@ -10,45 +10,45 @@ GameGui::GameGui() : Gui() {
 	int i = 0;
 	Snek::init(&sneks[i]);
 	sneks[i].controller.type = KEYBOARD;
-	World::addSnek(&world, sneks[i]);
+	Game::addSnek(&game, sneks[i]);
 
 	for (i = 1; i < /* global::numControllers */ testNum; i++) {
 		Snek::init(&sneks[i]);
 		sneks[i].controller.type = GAMEPAD;
-		World::addSnek(&world, sneks[i]);
+		Game::addSnek(&game, sneks[i]);
 	}
 
-	World::reset(&world);
+	Game::reset(&game);
 }
 
 GameGui::~GameGui() {
-	for (size_t i = 0; i < world.numSneks; i++) {
-		Snek::free(&world.sneks[i]);
+	for (size_t i = 0; i < game.numSneks; i++) {
+		Snek::free(&game.sneks[i]);
 	}
 }
 
 void GameGui::onEvent(SDL_Event *event) {
     // Send updates to each snek's controller
 	// Each controller is responsible for filtering which events apply to them
-	for (size_t i = 0; i < world.numSneks; i++) {
+	for (size_t i = 0; i < game.numSneks; i++) {
 		// Events only need to be sent to local sneks
-		if (world.sneks[i].controller.type != REMOTE) {
-			Controller::updateActions(&world.sneks[i].controller, event);
+		if (game.sneks[i].controller.type != REMOTE) {
+			Controller::updateActions(&game.sneks[i].controller, event);
 		}
 	}
 	if (event->type == SDL_KEYDOWN && event->key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-		World::reset(&world);
+		Game::reset(&game);
 	}
 }
 
 void GameGui::update() {
-    World::update(&world);
+    Game::update(&game);
 }
 
 void GameGui::draw() {
     // How large one pixel is
 	float scale;
-	// Location on the screen for where the world is rendered
+	// Location on the screen for where the game is rendered
 	SDL_Rect worldViewport;
 	if (global::screenWidth > global::screenHeight) {
 		scale = (float) global::screenHeight / WORLD_HEIGHT;
@@ -58,7 +58,7 @@ void GameGui::draw() {
 		worldViewport = { 0, (int) ((global::screenHeight / 2) - ((WORLD_HEIGHT / 2) * scale)), (int) (WORLD_WIDTH * scale), (int) (WORLD_HEIGHT * scale) };
 	}
 
-	// Set the viewport and the scaling for the world
+	// Set the viewport and the scaling for the game
 	SDL_RenderSetViewport(global::renderer, &worldViewport);
 
 	// Set game background color
@@ -69,13 +69,13 @@ void GameGui::draw() {
 		SDL_RenderFillRect(global::renderer, NULL);
 	}
 
-    // Draw the world
-    World::draw(&world, scale);
+    // Draw the game
+    Game::draw(&game, scale);
 
     // Undo the viewport
     SDL_RenderSetViewport(global::renderer, NULL);
 
-    // Draw the boarder around the world
+    // Draw the boarder around the game
 	SDL_SetRenderDrawColor(global::renderer, 0, 0xFF, 0, 0xFF);
 	SDL_RenderDrawRect(global::renderer, &worldViewport);
 

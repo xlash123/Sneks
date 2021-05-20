@@ -5,7 +5,7 @@ CXX ?= g++
 # path #
 SRC_PATH = src
 BUILD_PATH = build
-BIN_PATH = ./
+BIN_PATH = ./dist
 
 # executable # 
 BIN_NAME = sneks
@@ -50,7 +50,6 @@ clean:
 	@echo "Deleting directories"
 	@$(RM) -r $(BUILD_PATH)
 	@$(RM) -r $(BIN_PATH)
-
 # checks the executable and symlinks to the output
 .PHONY: all
 all: $(BIN_PATH)/$(BIN_NAME)
