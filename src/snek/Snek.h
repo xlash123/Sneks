@@ -16,12 +16,19 @@
 
 #include "../globals.h"
 #include "Position.h"
-#include "../controller/Controller.h"
 
 // Enum for the snek direction
 typedef enum {
     UP, RIGHT, DOWN, LEFT
 } Direction;
+
+// The actions the player has shown intent to perform
+typedef struct {
+	// Directional movements
+	bool moveUp, moveDown, moveLeft, moveRight;
+	// Minor speed boosts
+	bool speedUp, speedDown;
+} Actions;
 
 // The state of a snek
 typedef struct {
@@ -33,8 +40,10 @@ typedef struct {
     size_t playerNum;
     // If the snek is alive
     bool alive;
-    // The controller of this player
-    ControllerState controller;
+    // Determines if this snek is a valid player and not an empty spot
+    bool valid;
+    // The actions that the player which determines how a player acts in the next frame
+	Actions actions;
     // The direction the snek is facing
     Direction direction;
     // The last game tick when this snek was polled. Used for netcode

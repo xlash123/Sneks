@@ -1,12 +1,24 @@
 #include "Controller.h"
 
+void createDefaultInputBindings() {
+	int i;
+	for (i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++) {
+		defaultInputBindings[i] = { BUTTON, i };
+	}
+	for (i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++) {
+		defaultInputBindings[i + SDL_CONTROLLER_BUTTON_MAX] = { AXIS, i };
+	}
+}
+
 void Controller::init(ControllerState *controller) {
-	Controller::setDefaultActions(controller);
-	controller->gamepad = NULL;
 	controller->type = NONE;
 }
 
-void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
+void Controller::updateController(ControllerState *controller, SDL_Event *event) {
+
+}
+
+void Controller::updateActions(ControllerState *controller, SnekState *snek) {
 	switch (controller->type) {
 		case KEYBOARD: {
 			// Check that the event type is for keyboard events
@@ -15,16 +27,16 @@ void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 				bool isDown = event->type == SDL_KEYDOWN;
 				switch (event->key.keysym.scancode) {
 					case SDL_SCANCODE_W:
-						controller->actions.moveUp = isDown;
+						snek->actions.moveUp = isDown;
 						break;
 					case SDL_SCANCODE_A:
-						controller->actions.moveLeft = isDown;
+						snek->actions.moveLeft = isDown;
 						break;
 					case SDL_SCANCODE_S:
-						controller->actions.moveDown = isDown;
+						snek->actions.moveDown = isDown;
 						break;
 					case SDL_SCANCODE_D:
-						controller->actions.moveRight = isDown;
+						snek->actions.moveRight = isDown;
 						break;
 					default:;
 				}
@@ -40,50 +52,50 @@ void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 					// Determine which axis was moved
 					switch (event->caxis.axis) {
 						case SDL_CONTROLLER_AXIS_LEFTX:
-							controller->actions.moveLeft = event->caxis.value < -CONTROLLER_DEADZONE;
-							controller->actions.moveRight = event->caxis.value > CONTROLLER_DEADZONE;
+							snek->actions.moveLeft = event->caxis.value < -CONTROLLER_DEADZONE;
+							snek->actions.moveRight = event->caxis.value > CONTROLLER_DEADZONE;
 							break;
 						case SDL_CONTROLLER_AXIS_LEFTY:
-							controller->actions.moveUp = event->caxis.value < -CONTROLLER_DEADZONE;
-							controller->actions.moveDown = event->caxis.value > CONTROLLER_DEADZONE;
+							snek->actions.moveUp = event->caxis.value < -CONTROLLER_DEADZONE;
+							snek->actions.moveDown = event->caxis.value > CONTROLLER_DEADZONE;
 							break;
 						default:;
 					}
 					break;
 				case SDL_JOYHATMOTION:
 					// Reset movement options
-					controller->actions.moveRight = false;
-					controller->actions.moveLeft = false;
-					controller->actions.moveUp = false;
-					controller->actions.moveDown = false;
+					snek->actions.moveRight = false;
+					snek->actions.moveLeft = false;
+					snek->actions.moveUp = false;
+					snek->actions.moveDown = false;
 					switch (event->jhat.value) {
 						case SDL_HAT_UP:
-							controller->actions.moveUp = true;
+							snek->actions.moveUp = true;
 							break;
 						case SDL_HAT_DOWN:
-							controller->actions.moveDown = true;
+							snek->actions.moveDown = true;
 							break;
 						case SDL_HAT_RIGHTUP:
-							controller->actions.moveUp = true;
-							controller->actions.moveRight = true;
+							snek->actions.moveUp = true;
+							snek->actions.moveRight = true;
 							break;
 						case SDL_HAT_RIGHT:
-							controller->actions.moveRight = true;
+							snek->actions.moveRight = true;
 							break;
 						case SDL_HAT_RIGHTDOWN:
-							controller->actions.moveRight = true;
-							controller->actions.moveDown = true;
+							snek->actions.moveRight = true;
+							snek->actions.moveDown = true;
 							break;
 						case SDL_HAT_LEFTUP:
-							controller->actions.moveUp = true;
-							controller->actions.moveLeft = true;
+							snek->actions.moveUp = true;
+							snek->actions.moveLeft = true;
 							break;
 						case SDL_HAT_LEFT:
-							controller->actions.moveLeft = true;
+							snek->actions.moveLeft = true;
 							break;
 						case SDL_HAT_LEFTDOWN:
-							controller->actions.moveLeft = true;
-							controller->actions.moveDown = true;
+							snek->actions.moveLeft = true;
+							snek->actions.moveDown = true;
 							break;
 						default:;
 					}
@@ -96,8 +108,4 @@ void Controller::updateActions(ControllerState *controller, SDL_Event *event) {
 		}
 		default:;
 	}
-}
-
-void Controller::setDefaultActions(ControllerState *controller) {
-	controller->actions = { false, false, false, false, false, false };
 }

@@ -14,8 +14,12 @@
 #include "../globals.h"
 #include "../snek/Snek.h"
 #include "../snek/Food.h"
+#include "../controller/Controller.h"
 
-// The state of a world. Also serves as the game state
+/**
+ * The strictly gameplay-related game information. This information will get synced with all
+ * clients connected in this session.
+ * */
 typedef struct {
     // Array of sneks
     SnekState sneks[MAX_SNEKS];
@@ -28,6 +32,15 @@ typedef struct {
     // The state of the rng
     unsigned int rng;
 } GameState;
+
+/**
+ * Metadata related to this game. This data will never be synced with remote players and is only
+ * relevant to the local client.
+ * */
+typedef struct {
+    // The index that the player uses for a controller. -1 for remote players
+    int controllers[MAX_SNEKS];
+} GameMeta;
 
 namespace Game {
     // Initialize game state to default. Do not use to restart a game!
@@ -42,11 +55,23 @@ namespace Game {
     // Reset a food's position to a non-snek location
     void resetFood(GameState *game, int foodIdx);
 
+    // Receive input data and update the actions of each player. This will modify the game state
+    void processInput(GameState *game, GameMeta *meta);
+
     // Progress to the next game frame
-    void update(GameState *game);
+    GameState nextFrame(GameState *game);
 
     // Draw the world and everything in it
     void draw(GameState *game, float scale);
+
+    // Roll another RNG number based on the RNG value in the game state
+    long int nextRng(GameState *game);
+
+    // Save the given game state into a byte stream
+    void serialize(GameState *game, void **buffer);
+
+    // Convert a byte steam into a ready-to-use game state
+    void deserialize(void **buffer, GameState *game);
 };
 
 #endif

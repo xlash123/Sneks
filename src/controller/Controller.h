@@ -3,71 +3,52 @@
 
 #include <SDL2/SDL.h>
 
+#include "../snek/Snek.h"
+
 #define CONTROLLER_DEADZONE ((int) (0.5 * 32767))
+#define CONTROLLER_MAX_INPUTS SDL_CONTROLLER_BUTTON_MAX + SDL_CONTROLLER_AXIS_MAX
 
 // The type of controller to get inputs from
 typedef enum {
 	NONE, KEYBOARD, GAMEPAD, REMOTE
 } ControllerType;
 
-// The index and value of a hat input
+typedef enum {
+	BUTTON, AXIS
+} InputType;
+
+// Defines an input
 typedef struct {
-	Uint8 index;
-	Uint8 value;
-} JoystickHatBinding;
+	InputType type;
+	// The index of that button
+	int index;
+} Input;
 
-// The index and value of an axis input
+// The default mapping of inputs. Used as reference for what actions do what, or to reset bindings
+Input defaultInputBindings[CONTROLLER_MAX_INPUTS];
+
+// Controller metadata
 typedef struct {
-	Uint8 index;
-	Sint16 value;
-} JoystickAxisBinding;
-
-// The definition of a single action binding
-typedef union {
-	// A keyboard input
-	SDL_Scancode keycode;
-
-	// A joystick button input
-	Uint8 joystickButton;
-	// A joystick hat - hi = index, lo = value
-	JoystickHatBinding joystickHat;
-	JoystickAxisBinding joystickAxis;
-} ActionBinding;
-
-// The actions the player has shown intent to perform
-typedef struct {
-	// Directional movements
-	bool moveUp, moveDown, moveLeft, moveRight;
-	// Minor speed boosts
-	bool speedUp, speedDown;
-} Actions;
-
-// A collection of action bindings for every snek action for configuration
-typedef struct {
-	// Directional movements
-	ActionBinding moveUp, moveDown, moveLeft, moveRight;
-	// Minor speed boosts
-	ActionBinding speedUp, speedDown;
-} ActionBindings;
-
-typedef struct {
-	// The actions of the player made by this controller
-	Actions actions;
 	// The type of controller
 	ControllerType type;
-	// Reference to the underlying SDL Controller (used only for type = GAMEPAD)
-	SDL_GameController *gamepad;
-	Sint16 gamepadId;
+	// The configured input bindings
+	Input inputBindings[CONTROLLER_MAX_INPUTS];
+	// The buttons that are pressed
+	bool buttons[SDL_CONTROLLER_BUTTON_MAX];
+	// The state of each axis
+	int axis[SDL_CONTROLLER_AXIS_MAX];
 } ControllerState;
 
 namespace Controller {
+	// Initialize controller state
 	void init(ControllerState *controller);
-	// Set an SDL gamepad to a controller
-	void setGamepad(ControllerState *controller, SDL_GameController *gamepad);
-	// Set the actions of the controller to the default
-	void setDefaultActions(ControllerState *controller);
+
+	void updateController(ControllerState *controller, SDL_Event *event);
+
 	// Update that controller based on SDL events
-	void updateActions(ControllerState *controller, SDL_Event *event);
+	void updateActions(ControllerState *controller, SnekState *snek);
 };
+
+void createDefaultInputBindings();
 
 #endif

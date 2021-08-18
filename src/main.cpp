@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "globals.h"
+#include "controller/Controller.h"
 #include "gui/Gui.h"
 #include "gui/GameGui.h"
 
@@ -56,6 +57,9 @@ bool init() {
     // Set up main menu
     gui_stack.clear();
     // TODO: Put main menu gui here
+
+    // Set up the default input bindings for controllers
+    createDefaultInputBindings();
 
     // Keyboard controller
     global::controllers[0] = (ControllerState *) malloc(sizeof(ControllerState));

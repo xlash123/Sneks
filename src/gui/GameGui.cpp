@@ -2,6 +2,7 @@
 
 GameGui::GameGui() : Gui() {
 	Game::init(&game);
+	meta = {0};
 
 	const int testNum = 8;
 	SnekState sneks[testNum];
@@ -9,13 +10,14 @@ GameGui::GameGui() : Gui() {
 	// TODO: Add sneks with local controllers
 	int i = 0;
 	Snek::init(&sneks[i]);
-	sneks[i].controller.type = KEYBOARD;
 	Game::addSnek(&game, sneks[i]);
+	// Set player 1's controller to the keyboard
+	meta.controllers[0] = 0;
 
 	for (i = 1; i < /* global::numControllers */ testNum; i++) {
 		Snek::init(&sneks[i]);
-		sneks[i].controller.type = GAMEPAD;
 		Game::addSnek(&game, sneks[i]);
+		meta.controllers[sneks[i].playerNum] = i;
 	}
 
 	Game::reset(&game);
@@ -33,7 +35,7 @@ void GameGui::onEvent(SDL_Event *event) {
 	for (size_t i = 0; i < game.numSneks; i++) {
 		// Events only need to be sent to local sneks
 		if (game.sneks[i].controller.type != REMOTE) {
-			Controller::updateActions(&game.sneks[i].controller, event);
+			Controller::updateActions(&game.sneks[i].controller, snek, event);
 		}
 	}
 	if (event->type == SDL_KEYDOWN && event->key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
@@ -42,7 +44,7 @@ void GameGui::onEvent(SDL_Event *event) {
 }
 
 void GameGui::update() {
-    Game::update(&game);
+    Game::nextFrame(&game);
 }
 
 void GameGui::draw() {

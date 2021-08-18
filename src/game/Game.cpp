@@ -6,12 +6,14 @@ void Game::init(GameState *game) {
 }
 
 bool Game::addSnek(GameState *game, SnekState snek) {
-	if (game->numSneks < MAX_SNEKS) {
-		snek.playerNum = game->numSneks;
-		game->sneks[game->numSneks++] = snek;
-		return true;
+	// Attempt to add the snek in a free spot in the roster
+	for (size_t i = 0; i < MAX_SNEKS; i++) {
+		if (!game->sneks[i].valid) {
+			snek.playerNum = i;
+			game->sneks[i] = snek;
+			return true;
+		}
 	}
-
 	return false;
 }
 
@@ -48,10 +50,25 @@ void Game::resetFood(GameState *game, int foodIdx) {
 	game->food[foodIdx].pos = pos;
 }
 
-void Game::update(GameState *game) {
+void Game::processInput(GameState *game, GameMeta *meta) {
+	for (size_t i = 0; i < MAX_SNEKS; i++) {
+		// Check that the snek valid and that the controller is local
+		if (game->sneks[i].valid && meta->controllers[i] != -1) {
+			Controller::updateActions(
+				global::controllers[meta->controllers[i]],
+				game->sneks[i],
+				
+			);
+		}
+	}
+}
+
+GameState Game::nextFrame(GameState *game) {
+	// Copy existing game state
+
 	// Update all sneks in the game
-	for (size_t i = 0; i < game->numSneks; i++) {
-		if (game->sneks[i].alive) {
+	for (size_t i = 0; i < MAX_SNEKS; i++) {
+		if (game->sneks[i].valid && game->sneks[i].alive) {
 			Snek::update(&game->sneks[i]);
 		}
 	}
@@ -59,9 +76,9 @@ void Game::update(GameState *game) {
 	// Check for food collisions
 	// Do this first to allow pixel-perfect food-killing strats
 	for (size_t i = 0; i < game->maxFood; i++) {
-		for (size_t j = 0; j < game->numSneks; j++) {
+		for (size_t j = 0; j < MAX_SNEKS; j++) {
 			// Check for collision of food with head
-			if (game->food[i].pos.x == game->sneks[j].body[0].x && game->food[i].pos.y == game->sneks[j].body[0].y) {
+			if (game->sneks[i].valid && game->food[i].pos.x == game->sneks[j].body[0].x && game->food[i].pos.y == game->sneks[j].body[0].y) {
 				Snek::grow(&game->sneks[j]);
 				Game::resetFood(game, i);
 				break;
@@ -70,11 +87,11 @@ void Game::update(GameState *game) {
 	}
 
 	// Check for snek collisions
-	for (size_t i = 0; i < game->numSneks; i++) {
+	for (size_t i = 0; i < MAX_SNEKS; i++) {
 		SnekState *snek1 = &game->sneks[i];
 
-		// Skip dead sneks
-		if (!snek1->alive) {
+		// Skip dead sneks/invalid sneks
+		if (!snek1->valid || !snek1->alive) {
 			continue;
 		}
 
@@ -87,8 +104,8 @@ void Game::update(GameState *game) {
 		for (size_t j = i; j < game->numSneks; j++) {
 			SnekState *snek2 = &game->sneks[j];
 
-			// Skip dead sneks
-			if (!snek2->alive) {
+			// Skip dead/invalid sneks
+			if (!snek2->valid || !snek2->alive) {
 				continue;
 			}
 			
@@ -127,4 +144,8 @@ void Game::draw(GameState *game, float scale) {
 			Snek::draw(&game->sneks[i], scale);
 		}
 	}
+}
+
+void Game::serialize(GameState *game, void **buffer) {
+	
 }

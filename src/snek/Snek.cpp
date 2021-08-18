@@ -12,7 +12,7 @@ const SDL_Color PLAYER_COLORS[MAX_SNEKS] = {
 };
 
 void Snek::init(SnekState *snek) {
-    Controller::init(&snek->controller);
+    // Controller::init(&snek->controller);
 
     // Allocate snek body
     snek->body = NULL;
@@ -27,6 +27,7 @@ void Snek::init(SnekState *snek) {
         snek->body[i] = { SNEK_STARTING_LENGTH - i, 0 };
     }
     snek->alive = true;
+    snek->valid = true;
     snek->direction = RIGHT;
     snek->lastPolled = 0;
     snek->length = SNEK_STARTING_LENGTH;
@@ -55,7 +56,7 @@ void Snek::reset(SnekState *snek, int y, bool isRight) {
 
 void Snek::update(SnekState *snek) {
     // Get the players actions for this frame
-    Actions actions = snek->controller.actions;
+    Actions actions = snek->actions;
 
     // Update direction based on input
     // TODO: This is kinda unoptimized. Might be a better way to do this

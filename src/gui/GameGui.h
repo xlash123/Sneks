@@ -14,12 +14,20 @@ class GameGui : public Gui {
 public:
     // The current state of the game
     GameState game;
+    // The metadata for the game
+    GameMeta meta;
 
     GameGui();
     ~GameGui();
 
     // Take events and apply them to the controlls
     void onEvent(SDL_Event *event);
+
+    // Runs for every time a controller is removed
+    void onControllerRemoved(SDL_Event *event);
+
+    // Runs for every time a controller is added
+    void onControllerAdded(SDL_Event *event);
 
     // Update the game
     void update();

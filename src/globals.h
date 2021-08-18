@@ -33,7 +33,7 @@ namespace global {
 	extern SDL_Renderer *renderer;
 	// The SDL font
 	extern TTF_Font *font;
-	// List of connected controllers (0 is always keyboard)
+	// List of connected controllers (index 0 is always keyboard)
 	extern ControllerState *controllers[MAX_CONTROLLERS];
 	extern int numControllers;
 }
